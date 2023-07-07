@@ -55,132 +55,150 @@ class QueryResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
+            ->schema
+            ([
                 Card::make()
                     ->schema
                     ([
 
-                        TextInput::make('complainer_name')->required(),
+                                TextInput::make('complainer_name')->required(),
 
-                        Select::make('campus_id')->label('Campus Name')->placeholder('Select a Campus')
-                            ->preload()
-                            ->autofocus()
-                            ->relationship('campus', 'campus_name')
-                            ->required()
-                            ->reactive()
-                            ->afterStateUpdated(fn(callable $set) => $set('faculty_id', null)),
+                                Select::make('campus_id')->label('Campus Name')->placeholder('Select a Campus')
+                                    ->preload()
+                                    ->autofocus()
+                                    ->relationship('campus', 'campus_name')
+                                    ->required()
+                                    ->reactive()
+                                    ->afterStateUpdated(fn(callable $set) => $set('faculty_id', null)),
 
-                        Select::make('faculty_id')->label('Faculty Name')->placeholder('Select a Faculty')
-                            ->preload()
-                            ->required()
-                            ->reactive()
-                            ->options(function (callable $get) {
-                                $campus = ($get('campus_id'));
-                                if ($campus) {
-                                    return Faculty::where('campus_id', $campus)->pluck('faculty_name', 'id')->toArray();
-                                }
+                                Select::make('faculty_id')->label('Faculty Name')->placeholder('Select a Faculty')
+                                    ->preload()
+                                    ->required()
+                                    ->reactive()
+                                    ->options(function (callable $get) {
+                                        $campus = ($get('campus_id'));
+                                        if ($campus) {
+                                            return Faculty::where('campus_id', $campus)->pluck('faculty_name', 'id')->toArray();
+                                        }
 
-                            })
-                            ->afterStateUpdated(fn(callable $set) => $set('department_id', null)),
-                        Select::make('department_id')->label('Department Name')
-                            ->preload()
-                            ->required()
-                            ->reactive()
-                            ->options(function (callable $get) {
-                                $faculty = ($get('faculty_id'));
-                                if ($faculty) {
-                                    return Department::where('faculty_id', $faculty)->pluck('department_name', 'id');
-                                }
+                                    })
+                                    ->afterStateUpdated(fn(callable $set) => $set('department_id', null)),
+                                Select::make('department_id')->label('Department Name')
+                                    ->preload()
+                                    ->required()
+                                    ->reactive()
+                                    ->options(function (callable $get) {
+                                        $faculty = ($get('faculty_id'));
+                                        if ($faculty) {
+                                            return Department::where('faculty_id', $faculty)->pluck('department_name', 'id');
+                                        }
 
-                            }),
+                                    }),
 
-                            Select::make('complaincategory_id')->label('Complain Category')->placeholder('Select Complain Category')
-                            ->preload()
-                            ->autofocus()
-                            ->relationship('complaincategoryname', 'complain_category_name')
-                            ->required()
-                            ->reactive()
-                            ->afterStateUpdated(fn(callable $set) => $set('complaincategorytype_id', null)),
-
-                        Select::make('complaincategorytype_id')->label('Complain Category Type')->placeholder('Complain Category Type')
-                            ->preload()
-                            ->required()
-                            ->reactive()
-                            ->options(function (callable $get) {
-                                $complaincat = ($get('complaincategory_id'));
-                                if ($complaincat) {
-                                    return Complaincategorytype::where('complaincategory_id', $complaincat)->pluck('complain_category_type', 'id')->toArray();
-                                }
-
-                            }),
-
-                        // Select::make('complain_id')
-                        //     ->relationship('complain', 'complain_type')->required(),
-
-                                    TextInput::make('complain_description'),
+                                    Select::make('complaincategory_id')->label('Complain Category')
+                                    ->preload()
+                                    ->autofocus()
+                                    ->relationship('complaincategoryname', 'complain_category_name')
+                                    ->required()
+                                    ->reactive()
+                                    ->afterStateUpdated(fn(callable $set) => $set('complaincategorytype_id', null)),
 
 
-                            TextInput::make('extension'),
-
-                            Select::make('status')
-                            ->options([
-
-                                'inprocess' => 'In Process',
-                                'repaired' => 'Repaired',
-                                'deleivered' => 'Deleivered',
-                                'pending' => 'Send To Vendor',
-                                'dead'  =>'Dead'
-                            ])->required()
-
-                            // ->disablePlaceholderSelection()
+                                Select::make('complaincategorytype_id')->label('Complain Category Type')
 
 
-                            ->hidden(fn() => auth()->user()->hasRole('user'))
-                            ->reactive(),
+                                    ->required()
+                                    ->reactive()
+                                    ->options(function (callable $get)
+                                     {
+                                        $complaincat = ($get('complaincategory_id'));
+                                        if ($complaincat) {
+                                            return Complaincategorytype::where('complaincategory_id', $complaincat)->pluck('complain_category_type', 'id')->toArray();
+                                        }
+
+                                    }),
+
+                                // Select::make('complain_id')
+                                //     ->relationship('complain', 'complain_type')->required(),
+
+                                            TextInput::make('complain_description'),
 
 
-                           select::make('vendor_id')
-                           ->relationship('vendor','company_name')
-                           ->label('Vendor')
-                        //    ->reactive()
-                           ->requiredWith('status')
-                               ->visible(fn(Closure $get) => $get('status') == 'pending'),
-
-                            DateTimePicker::make('send_to_vendor')
-                               ->label('Send to Vendor Date')
-                               ->minDate(now())
-                               ->maxDate(Carbon::now()->addDays(31))
-                               ->requiredWith('status')
-                               ->visible(fn(Closure $get) => $get('status') == 'pending')
-
-                               ->hidden(fn() => !auth()->user()->hasRole('user')),
-                               DateTimePicker::make('received_from_vendor')
-                               ->label('Received From Vendor Date')
-                               ->minDate(now())
-                               ->maxDate(Carbon::now()->addDays(31))
-                               ->requiredWith('status')
-                               ->visible(fn(Closure $get) => $get('status') == 'repaired')
-
-                               ->hidden(fn() => auth()->user()->hasRole('user')),
-
-                            DateTimePicker::make('send_to_dept')
-                            ->label('Send to Department Date')
-                            ->minDate(now())
-                            ->maxDate(Carbon::now()->addDays(31))
-                            ->requiredWith('status')
-                               ->visible(fn(Closure $get) => $get('status') == 'deleivered')
-
-                            ->hidden(fn() => auth()->user()->hasRole('user')),
-
-                            // ->disabledDates(['2022-10-02', '2022-10-05', '2022-10-15'])
+                                    TextInput::make('extension'),
 
 
 
+                                        Select::make('status')
+                                        ->options([
 
-                           ])
+                                            'inprocess' => 'In Process',
+                                            'repaired' => 'Repaired',
+                                            'deleivered' => 'Deleivered',
+                                            'pending' => 'Send To Vendor',
+                                            'received' => 'Received from vendor',
+                                            'dead'=>'Dead'
+                                        ])
+                                        ->required()
+                                        // ->disablePlaceholderSelection()
+                                        ->hidden(fn() => auth()->user()->hasRole('user'))
+                                        ->reactive(),
+
+
+                                    select::make('vendor_id')
+                                    ->relationship('vendor','company_name')
+                                    ->label('Vendor')
+
+                                            ->requiredWith('status')
+                                                ->visible(fn(Closure $get) => $get('status') == 'pending'),
+
+                                                DateTimePicker::make('send_to_vendor')
+                                                ->label('Send to Vendor Date')
+                                                ->minDate(now())
+                                                ->maxDate(Carbon::now()->addDays(31))
+                                                ->requiredWith('status')
+                                                ->visible(fn(Closure $get) => $get('status') == 'pending')
+
+                                                ->hidden(fn() => !auth()->user()->hasRole('user')),
+                                                DateTimePicker::make('received_from_vendor')
+                                                ->label('Received From Vendor Date')
+                                                ->minDate(now())
+                                                ->maxDate(Carbon::now()->addDays(31))
+                                                ->requiredWith('status')
+                                                ->visible(fn(Closure $get) => $get('status') == 'repaired')
+
+                                                ->hidden(fn() => auth()->user()->hasRole('user')),
+                                                DateTimePicker::make('received_from_vendor')
+
+                                                ->label('Received From Vendor Date')
+                                                ->minDate(now())
+                                                ->maxDate(Carbon::now()->addDays(31))
+                                                ->requiredWith('status')
+                                                ->visible(fn(Closure $get) => $get('status') == 'received')
+
+                                                ->hidden(fn() => auth()->user()->hasRole('user')),
+
+                                                DateTimePicker::make('send_to_dept')
+                                                ->label('Send to Department Date')
+                                                ->minDate(now())
+                                                ->maxDate(Carbon::now()->addDays(31))
+                                                ->requiredWith('status')
+                                                ->visible(fn(Closure $get) => $get('status') == 'deleivered')
+
+                                                ->hidden(fn() => auth()->user()->hasRole('user')),
+
+                                                // ->disabledDates(['2022-10-02', '2022-10-05', '2022-10-15'])
 
 
 
+
+
+
+
+
+
+
+
+                                ]),
 
             ]);
 
@@ -222,7 +240,8 @@ class QueryResource extends Resource
                         'warning' => 'inprocess',
                         'success' => 'deleivered',
                         'danger' => 'send_to_vendor',
-                        'danger'  =>'Dead'
+                        'success' => 'received',
+                        'danger' => 'dead'
                     ]),
 
                 TextColumn::make('vendor.company_name')->label('Vendor Name')

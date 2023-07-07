@@ -66,8 +66,8 @@ class VendorRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('address'),
                 Tables\Columns\TextColumn::make('state'),
                 Tables\Columns\TextColumn::make('city'),
-                Tables\Columns\TextColumn::make('queries.send_to_vendor')->dateTime('M j, Y')->searchable(),
-                Tables\Columns\TextColumn::make('queries.received_from_vendor')->dateTime('M j, Y')->searchable(),
+                Tables\Columns\TextColumn::make('queries.send_to_vendor')->label('Send to Vendor')->dateTime('M j, Y')->searchable(),
+                Tables\Columns\TextColumn::make('queries.received_from_vendor')->label('Received from Vendor')->dateTime('M j, Y')->searchable(),
 
             ])
             ->filters([
