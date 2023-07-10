@@ -10,6 +10,7 @@ use App\Models\Query;
 use App\Models\Faculty;
 use Livewire\Component;
 use App\Models\Department;
+
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
@@ -237,11 +238,20 @@ class QueryResource extends Resource
                     ->colors([
 
                         'secondary' => 'repaired',
-                        'warning' => 'inprocess',
+                        'primary' => 'inprocess',
                         'success' => 'deleivered',
                         'danger' => 'send_to_vendor',
                         'success' => 'received',
                         'danger' => 'dead'
+
+                        // ->IconColumn([
+                        //     // 'heroicon-o-x',
+                        //     'heroicon-o-document' => 'repaired',
+                        //     'heroicon-o-refresh' => 'inprocess',
+                        //     'heroicon-o-truck' => 'deleivered',
+                        //     'heroicon-o-pencil' =>'send_to_vendor',
+                        //     'heroicon-o-document' => 'received',
+
                     ]),
 
                 TextColumn::make('vendor.company_name')->label('Vendor Name')

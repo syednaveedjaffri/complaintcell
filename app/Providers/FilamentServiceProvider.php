@@ -2,13 +2,14 @@
 
 namespace App\Providers;
 
-use App\Filament\Resources\PermissionResource;
-use App\Filament\Resources\RoleResource;
-use App\Filament\Resources\UserResource;
 use Filament\Facades\Filament;
+use Illuminate\Auth\Access\Gate;
+use Illuminate\Support\Facades\Auth;
 use Filament\Navigation\UserMenuItem;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Auth\Access\Gate;
+use App\Filament\Resources\RoleResource;
+use App\Filament\Resources\UserResource;
+use App\Filament\Resources\PermissionResource;
 
 class FilamentServiceProvider extends ServiceProvider
 {
@@ -31,8 +32,10 @@ class FilamentServiceProvider extends ServiceProvider
     {
         Filament::serving(function()
         {
-            if (auth()->user()){
-                if (auth()->user()->is_admin ===1 && auth()->user()->hasAnyRole(['super-admin','admin','moderator']))
+             // if (auth()->user()){
+            //     if (auth()->user()->is_admin ===1 && auth()->user()->hasAnyRole(['super-admin','admin','moderator'])) OK HAE
+            // Filament::registerViteTheme('resources/css/filament.css');
+            if(Auth::check() && Auth::user()->hasanyRole(['super-admin','admin','moderator']))
                 {
                     Filament::registerUserMenuItems([
                         UserMenuItem::make()
@@ -48,7 +51,7 @@ class FilamentServiceProvider extends ServiceProvider
                         ->url(PermissionResource::getUrl())
                         ->icon('heroicon-s-key'),
                     ]);
-            }
+
 
             }
         }
