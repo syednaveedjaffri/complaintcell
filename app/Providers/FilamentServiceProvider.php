@@ -34,7 +34,7 @@ class FilamentServiceProvider extends ServiceProvider
         {
              // if (auth()->user()){
             //     if (auth()->user()->is_admin ===1 && auth()->user()->hasAnyRole(['super-admin','admin','moderator'])) OK HAE
-            // Filament::registerViteTheme('resources/css/filament.css');
+            Filament::registerViteTheme('resources/css/filament.css');
             if(Auth::check() && Auth::user()->hasanyRole(['super-admin','admin','moderator']))
                 {
                     Filament::registerUserMenuItems([
