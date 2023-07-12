@@ -35,7 +35,7 @@ class ComplaincategorytypeSeeder extends Seeder
                 'complaincategory_id'=>2,
                 'complain_category_type'=>'office'
             ],
-            [   'complaincategory_id'=>1,
+            [   'complaincategory_id'=>2,
                 'complain_category_type'=>'othersoftware'
             ],
             [

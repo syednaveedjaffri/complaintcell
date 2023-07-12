@@ -134,9 +134,10 @@ class QueryResource extends Resource
 
                                             'inprocess' => 'In Process',
                                             'repaired' => 'Repaired',
-                                            'deleivered' => 'Deleivered',
+
                                             'pending' => 'Send To Vendor',
-                                            'received' => 'Received from vendor',
+                                            'received_from_vendor' => 'Received from vendor',
+                                            'send_to_dept' => 'Send to Department',
                                             'dead'=>'Dead'
                                         ])
                                         ->required()
@@ -144,7 +145,23 @@ class QueryResource extends Resource
                                         ->hidden(fn() => auth()->user()->hasRole('user'))
                                         ->reactive(),
 
+                                        DateTimePicker::make('repaired')
+                                        ->label('Repaired Date')
+                                        ->minDate(now())
+                                        ->maxDate(Carbon::now()->addDays(31))
+                                        ->requiredWith('status')
+                                        ->visible(fn(Closure $get) => $get('status') == 'repaired')
 
+                                        ->hidden(fn() => auth()->user()->hasRole('user')),
+
+                                        DateTimePicker::make('send_to_dept')
+                                        ->label('Send to Department Date')
+                                        ->minDate(now())
+                                        ->maxDate(Carbon::now()->addDays(31))
+                                        ->requiredWith('status')
+                                        ->visible(fn(Closure $get) => $get('status') == 'send_to_dept')
+
+                                        ->hidden(fn() => auth()->user()->hasRole('user')),
                                     select::make('vendor_id')
                                     ->relationship('vendor','company_name')
                                     ->label('Vendor')
@@ -158,34 +175,17 @@ class QueryResource extends Resource
                                                 ->maxDate(Carbon::now()->addDays(31))
                                                 ->requiredWith('status')
                                                 ->visible(fn(Closure $get) => $get('status') == 'pending')
+                                                ->hidden(fn() => auth()->user()->hasRole('user')),
 
-                                                ->hidden(fn() => !auth()->user()->hasRole('user')),
                                                 DateTimePicker::make('received_from_vendor')
                                                 ->label('Received From Vendor Date')
                                                 ->minDate(now())
                                                 ->maxDate(Carbon::now()->addDays(31))
                                                 ->requiredWith('status')
-                                                ->visible(fn(Closure $get) => $get('status') == 'repaired')
-
-                                                ->hidden(fn() => auth()->user()->hasRole('user')),
-                                                DateTimePicker::make('received_from_vendor')
-
-                                                ->label('Received From Vendor Date')
-                                                ->minDate(now())
-                                                ->maxDate(Carbon::now()->addDays(31))
-                                                ->requiredWith('status')
-                                                ->visible(fn(Closure $get) => $get('status') == 'received')
-
+                                                ->visible(fn(Closure $get) => $get('status') == 'received_from_vendor')
                                                 ->hidden(fn() => auth()->user()->hasRole('user')),
 
-                                                DateTimePicker::make('send_to_dept')
-                                                ->label('Send to Department Date')
-                                                ->minDate(now())
-                                                ->maxDate(Carbon::now()->addDays(31))
-                                                ->requiredWith('status')
-                                                ->visible(fn(Closure $get) => $get('status') == 'deleivered')
 
-                                                ->hidden(fn() => auth()->user()->hasRole('user')),
 
                                                 // ->disabledDates(['2022-10-02', '2022-10-05', '2022-10-15'])
 
@@ -223,25 +223,26 @@ class QueryResource extends Resource
 
 
                 TextColumn::make('created_at')->date('d/m/Y H:i')->searchable()->sortable()->label('Complain Date'),
-                TextColumn::make('send_to_dept')->date('d/m/Y H:i')->searchable()->sortable()->label('Send to Department Date')
+                TextColumn::make('repaired')->date('d/m/Y H:i')->searchable()->sortable()->label('Repaired Date')
                 ->hidden(fn() => auth()->user()->hasRole('user')),
+
                 TextColumn::make('send_to_vendor')->date('d/m/Y H:i')->searchable()->sortable()->label('Send to Vendor Date')
-
 // dateTime()
+               ->hidden(fn() => auth()->user()->hasRole('user')),
 
-                ->hidden(fn() => auth()->user()->hasRole('user')),
                 TextColumn::make('received_from_vendor')->date('d/m/Y H:i')->searchable()->sortable()->label('Received from Vendor Date')
                 ->hidden(fn() => auth()->user()->hasRole('user')),
-
+                TextColumn::make('send_to_dept')->date('d/m/Y H:i')->searchable()->sortable()->label('Send to Department Date')
+                ->hidden(fn() => auth()->user()->hasRole('user')),
 
                     BadgeColumn::make('status')
                     ->colors([
 
                         'warning' => 'repaired',
                         'primary' => 'inprocess',
-                        'success' => 'deleivered',
+                        'success' => 'send_to_dept',
                         'danger' => 'send_to_vendor',
-                        'success' => 'received',
+                        // 'success' => 'received_from_vendor',
                         'danger' => 'dead'
 
                         // ->IconColumn([
@@ -293,8 +294,10 @@ class QueryResource extends Resource
 
                     'inprocess' => 'In Process',
                     'repaired' => 'Repaired',
-                    'deleivered' => 'Deleivered',
-                    'send_to_vendor' => 'Send To Vendor'
+                    'send_to_dept' => 'send To Deptartment',
+                    'send_to_vendor' => 'Send To Vendor',
+                    'received_from_vendor' => 'Received From Vendor',
+                    'dead'=>'Dead'
 
                 ])->hidden(fn() => auth()->user()->hasRole('user'))
 
@@ -420,10 +423,10 @@ class QueryResource extends Resource
 
 
     }
-    protected function isTablePaginationsEnabled(): bool
-    {
-        return false;
-    }
+    // protected function isTablePaginationsEnabled(): bool
+    // {
+    //     return false;
+    // }
 
 
 

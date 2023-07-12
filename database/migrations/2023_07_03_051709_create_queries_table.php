@@ -29,9 +29,12 @@ return new class extends Migration
 
             $table->string('status')->default('inprocess');
 
-            $table->date('send_to_dept')->nullable();
+            $table->date('send_to_dept')->label('Sent To Department')->nullable();
             $table->date('send_to_vendor')->nullable();
             $table->date('received_from_vendor')->nullable();
+            // $table->date('deleivered')->nullable();
+            $table->date('repaired')->nullable();
+
             // $table->softDeletes();
             $table->timestamps();
         });
