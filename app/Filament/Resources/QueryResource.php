@@ -222,22 +222,22 @@ class QueryResource extends Resource
                 TextColumn::make('extension')->label('Extension')->sortable(),
 
 
-                TextColumn::make('created_at')->dateTime()->searchable()->sortable()->label('Complain Date'),
-                TextColumn::make('send_to_dept')->dateTime()->searchable()->sortable()->label('Send to Department Date')
+                TextColumn::make('created_at')->date('d/m/Y H:i')->searchable()->sortable()->label('Complain Date'),
+                TextColumn::make('send_to_dept')->date('d/m/Y H:i')->searchable()->sortable()->label('Send to Department Date')
                 ->hidden(fn() => auth()->user()->hasRole('user')),
-                TextColumn::make('send_to_vendor')->dateTime()->searchable()->sortable()->label('Send to Vendor Date')
+                TextColumn::make('send_to_vendor')->date('d/m/Y H:i')->searchable()->sortable()->label('Send to Vendor Date')
 
-
+// dateTime()
 
                 ->hidden(fn() => auth()->user()->hasRole('user')),
-                TextColumn::make('received_from_vendor')->dateTime()->searchable()->sortable()->label('Received from Vendor Date')
+                TextColumn::make('received_from_vendor')->date('d/m/Y H:i')->searchable()->sortable()->label('Received from Vendor Date')
                 ->hidden(fn() => auth()->user()->hasRole('user')),
 
 
                     BadgeColumn::make('status')
                     ->colors([
 
-                        'secondary' => 'repaired',
+                        'warning' => 'repaired',
                         'primary' => 'inprocess',
                         'success' => 'deleivered',
                         'danger' => 'send_to_vendor',
@@ -418,6 +418,11 @@ class QueryResource extends Resource
 
         }
 
+
+    }
+    protected function isTablePaginationsEnabled(): bool
+    {
+        return false;
     }
 
 
