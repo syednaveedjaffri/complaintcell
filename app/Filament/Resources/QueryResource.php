@@ -48,6 +48,7 @@ class QueryResource extends Resource
     protected static ?string $model = Query::class;
 
     // protected static ?string $recordTitleAttribute = 'title';
+    protected ?string $maxContentWidth = 'full';
     protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
     protected static ?string $navigationGroup = 'Query Management';
 
