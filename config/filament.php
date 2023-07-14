@@ -182,7 +182,7 @@ return [
     */
 
     'database_notifications' => [
-        'enabled' => true,
+        'enabled' => false,
         'polling_interval' => '30s',
     ],
 
@@ -200,12 +200,12 @@ return [
 
     'broadcasting' => [
 
-        // 'echo' => [
-        //     'broadcaster' => 'pusher',
-        //     'key' => env('VITE_PUSHER_APP_KEY'),
-        //     'cluster' => env('VITE_PUSHER_APP_CLUSTER'),
-        //     'forceTLS' => true,
-        // ],
+        'echo' => [
+            'broadcaster' => 'pusher',
+            'key' => env('VITE_PUSHER_APP_KEY'),
+            'cluster' => env('VITE_PUSHER_APP_CLUSTER'),
+            'forceTLS' => true,
+        ],
 
     ],
 

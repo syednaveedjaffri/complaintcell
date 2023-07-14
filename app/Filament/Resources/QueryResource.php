@@ -41,6 +41,8 @@ use Illuminate\Database\Console\Migrations\StatusCommand;
 use App\Filament\Resources\QueryResource\RelationManagers;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use App\Filament\Resources\QueryResource\RelationManagers\VendorRelationManager;
+use Filament\Notifications\Notification;
+use PHPUnit\Framework\Error\Notice;
 
 class QueryResource extends Resource
 {
@@ -141,6 +143,7 @@ class QueryResource extends Resource
                                             'send_to_dept' => 'Send to Department',
                                             'dead'=>'Dead'
                                         ])
+
                                         ->required()
                                         // ->disablePlaceholderSelection()
                                         ->hidden(fn() => auth()->user()->hasRole('user'))
@@ -239,20 +242,14 @@ class QueryResource extends Resource
                     BadgeColumn::make('status')
                     ->colors([
 
-                        'warning' => 'repaired',
+                        'success' => 'repaired',
                         'primary' => 'inprocess',
-                        'success' => 'send_to_dept',
+                        'warning' => 'send_to_dept',
                         'danger' => 'send_to_vendor',
-                        // 'success' => 'received_from_vendor',
+                        'primary' => 'received_from_vendor',
                         'danger' => 'dead'
 
-                        // ->IconColumn([
-                        //     // 'heroicon-o-x',
-                        //     'heroicon-o-document' => 'repaired',
-                        //     'heroicon-o-refresh' => 'inprocess',
-                        //     'heroicon-o-truck' => 'deleivered',
-                        //     'heroicon-o-pencil' =>'send_to_vendor',
-                        //     'heroicon-o-document' => 'received',
+
 
                     ]),
 
@@ -307,7 +304,9 @@ class QueryResource extends Resource
             ->actions([
 
                 Tables\Actions\EditAction::make('Action'),
+                // ->button()->color('warning'),OK HAE
                 Tables\Actions\DeleteAction::make('Delete'),
+
                 // Tables\Actions\ViewAction::make(),
                 // Tables\Actions\Action::make('print')
                 // ->action(function(User $record){
@@ -317,6 +316,7 @@ class QueryResource extends Resource
                 // CreateAction::make()
                 //     ->successNotificationTitle('Your query Has been Submitted Successfully')
             ])
+
             ->bulkActions([
 
                 Tables\Actions\DeleteBulkAction::make()->hidden(fn() => auth()->user()->hasRole('user')),

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\QueryResource\Pages;
 use App\Models\User;
 use Filament\Pages\Actions;
 use App\Filament\Resources\QueryResource;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +21,9 @@ class CreateQuery extends CreateRecord
     protected function getCreatedNotificationTitle(): ?string
     {
         return 'Your Query is submitted successfully';
+
     }
+
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
