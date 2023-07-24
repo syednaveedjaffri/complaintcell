@@ -41,7 +41,9 @@ class EditQuery extends EditRecord
     {
         $data['user_id'] = auth()->id();
 
+
         return $data;
     }
+
 
 }

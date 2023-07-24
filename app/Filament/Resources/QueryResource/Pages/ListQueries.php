@@ -15,16 +15,16 @@ class ListQueries extends ListRecords
 
     protected function getTableQuery(): Builder
     {
-        return Query::query()->latest();
+
         $role = Auth::user()->roles()->first();
         if($role->name === 'user' || $role->name === '')
         {
-            return parent::getTableQuery()->where('user_id', auth()->user()->id);
+            return parent::getTableQuery()->where('user_id', auth()->user()->id)->latest();
         }
 
         else
         {
-            return parent::getTableQuery();
+            return parent::getTableQuery()->latest();
         }
 
     }
